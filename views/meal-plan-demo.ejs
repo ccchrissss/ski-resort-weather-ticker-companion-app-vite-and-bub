@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Plan Demo | Munch Map</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- <link href="/dist/output.css" rel="stylesheet"> -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              bluelagoon: {
+                500: '#85bbff',
+                600: '#749add'
+              }
+            }
+          }
+        }
+      }
+    </script>    
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.14/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" type="image/x-icon" href="/assets/grocery-cart-color.png">
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet" />
+</head>
+<body>
+
+  <div id="meal-plan" class="bg-white">
+    <header class="absolute inset-x-0 top-0 z-50">
+      <!-- https://flowbite.com/docs/components/navbar/ -->
+      
+      <nav class="px-4 lg:px-6 py-3">
+        <div class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
+          <a href="/" class="flex grow basis-[0] items-center">
+            <img src="/assets/grocery-cart-color.png" class="mr-3 h-10 hover:brightness-[1.04]" alt="Munch Map shopping cart logo" />
+            <span class="self-center text-xl font-semibold whitespace-nowrap text-gray-700 hover:text-gray-500">Munch Map</span>
+          </a>
+          
+          <!-- <div class="flex grow basis-[0] justify-end h-0"></div> -->
+          
+          <div class="flex grow basis-[0] justify-end items-center lg:order-3">
+            <% if (user) { %>
+              <p class="hidden sm:inline lg:block text-lg text-bluelagoon-600 font-medium pr-4 lg:pr-5 py-2 lg:py-2.5 mr-2"><%= user.userName %></p>
+              <p class="hidden sm:inline lg:block"><a href="/log-out" class="italic text-lg text-gray-400 hover:text-gray-500">Log out</a></p>
+            <% } else { %>
+              <a href="log-in" class="hidden sm:inline text-lg text-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg pr-4 lg:pr-5 py-2 lg:py-2.5 focus:outline-none hover:text-gray-500">Log In</a>
+              <a href="sign-up" class="hidden sm:inline text-lg text-bluelagoon-600 bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg px-4 lg:px-5 py-2 lg:py-2.5 mr-2 hover:text-bluelagoon-500">Sign Up</a>
+            <% } %> 
+              <button data-collapse-toggle="mobile-menu-2" type="button" class="inline-flex items-center p-2 ml-1 text-lg text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200" aria-controls="mobile-menu-2" aria-expanded="false">
+                  <span class="sr-only">Open main menu</span>
+                  <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
+                  <svg class="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+              </button>
+          </div>
+
+          <% if (user) { %>
+            <div class="flex justify-end w-full lg:w-auto lg:order-2">
+              <div class="p-2 lg:p-0 gap-x-0 columns-3 hidden bg-gray-100 lg:bg-transparent mt-2 lg:mt-0 rounded-lg shadow lg:shadow-none w-44 justify-between items-center w-full sm:w-6/12 sm:items-end sm:columns-2 lg:flex lg:w-auto lg:order-1 border border-gray-300 lg:border-none" id="mobile-menu-2">
+                <ul class="flex flex-col font-medium lg:flex-row lg:space-x-8 lg:mt-0">
+                  <li class="lg:mt-0">
+                    <a href="/" class="block p-2 pl-3 text-gray-700 text-lg leading-5 rounded bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 hover:text-gray-500" aria-current="page">Home</a>
+                  </li>
+                  <li class="">
+                    <a href="meal-plan-demo" class="block p-2 pl-3 text-lg leading-5 text-gray-700 lg:border-0 lg:p-0 hover:text-gray-500">Demo</a>
+                  </li>
+                  <li class="">
+                    <a href="meal-plan" class="block p-2 pl-1 text-lg leading-5 text-gray-700 lg:border-0 lg:p-0 hover:text-gray-500">Meal Plan</a>
+                  </li>
+                  <li class="">
+                    <a href="grocery-list" class="block p-2 pl-1 text-lg leading-5 text-gray-700 lg:border-0 lg:p-0 hover:text-gray-500">Grocery List</a>
+                  </li>
+                  <li class="sm:hidden">
+                    <span class="block p-2 pb-0 text-lg leading-5 text-bluelagoon-600 truncate lg:border-0 lg:p-0 lg:hidden"><%= user.userName %></span>
+                    <a href="log-out" class="block px-2 italic font-normal text-lg text-gray-400 lg:border-0 lg:p-0 hover:text-gray-500 lg:hidden">Log out</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+          <% } else { %>
+            <div class="flex justify-end w-full lg:w-auto lg:order-2">
+              <div class="p-2 lg:p-0 gap-x-0 columns-3 hidden bg-gray-100 lg:bg-transparent mt-2 lg:mt-0 rounded-lg shadow lg:shadow-none w-44 justify-between items-center w-full sm:w-6/12 sm:items-end sm:columns-2 lg:flex lg:w-auto lg:order-1 border border-gray-300 lg:border-none" id="mobile-menu-2">
+                <ul class="flex flex-col font-medium lg:flex-row lg:space-x-8 lg:mt-0">
+                  <li class="lg:mt-0">
+                    <a href="/" class="block py-2 pl-3 text-gray-700 text-lg leading-5 rounded bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 hover:text-gray-500" aria-current="page">Home</a>
+                  </li>
+                  <li class="">
+                    <a href="meal-plan-demo" class="block py-2 pl-3 text-lg leading-5 text-gray-700 lg:border-0 lg:p-0 hover:text-gray-500">Demo</a>
+                  </li>
+                  <li class="">
+                    <span href="meal-plan" class="block py-2 pl-1 text-lg leading-5 text-gray-400 lg:border-0 lg:p-0">Meal Plan</span>
+                  </li>
+                  <li class="">
+                    <span href="grocery-list" class="block py-2 pl-1 text-lg leading-5 text-gray-400 lg:border-0 lg:p-0">Grocery List</span>
+                  </li>
+                  <li class="lg:mt-0 sm:hidden">
+                    <a href="log-in" class="block py-2 pr-4 pl-3 text-lg leading-5 text-gray-700 lg:border-0 lg:p-0 hover:text-gray-500">Log In</a>
+                  </li>
+                  <li class="sm:hidden">
+                    <a href="sign-up" class="block py-2 pr-4 pl-3 text-lg leading-5 text-bluelagoon-600 lg:border-0 lg:p-0 hover:text-bluelagoon-500">Sign Up</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          <% } %> 
+        </div>
+      </nav>
+
+    </header>
+
+    <div class="mx-auto max-w-2xl pt-40">
+      <div class="text-center">
+        <h2 id="meal-plan-heading" class="text-5xl px-4 mb-8 font-bold tracking-tight text-gray-900 sm:text-6xl">Meal Plan Demo</h2>
+      </div>
+
+    </div>
+  
+    <div class="relative isolate px-6 pt-6 lg:px-8">
+      <!-- crazy background blob 1/2 -->
+      <!-- <div class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80" aria-hidden="true">
+        <div class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
+      </div> -->
+      <div class="mx-auto max-w-sm sm:max-w-lg lg:max-w-4xl pt-1 pb-36">
+
+        <div class="text-center">
+          <a href="grocery-list-demo" class="rounded-md bg-bluelagoon-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-bluelagoon-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bluelagoon-600">
+            <span>Try the Grocery List</span>
+          </a>
+        </div>
+
+        <div class="mx-auto mt-16 max-w-2xl lg:max-w-4xl pt-1 pb-36">
+          <dl class="grid max-w-xl grid-cols-1 gap-x-8 gap-y-10 sm:pl-12 lg:pl-5 lg:max-w-none lg:grid-cols-2 lg:gap-y-16">
+
+            <!-- Monday Start -->
+            <div class="relative pl-16">
+              <dt class="text-base font-semibold leading-7 text-gray-900">
+                <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-bluelagoon-600">
+                  <!-- <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
+                  </svg> -->
+                  <svg class="h-7 fill-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M22.7 33.4c13.5-4.1 28.1 1.1 35.9 12.9L224 294.3 389.4 46.2c7.8-11.7 22.4-17 35.9-12.9S448 49.9 448 64V448c0 17.7-14.3 32-32 32s-32-14.3-32-32V169.7L250.6 369.8c-5.9 8.9-15.9 14.2-26.6 14.2s-20.7-5.3-26.6-14.2L64 169.7V448c0 17.7-14.3 32-32 32s-32-14.3-32-32V64C0 49.9 9.2 37.5 22.7 33.4z"/></svg>
+                </div>
+                Monday
+              </dt>
+              <dd class="mt-2 text-base leading-7 text-gray-600">
+                <form class="weekday flex flex-wrap mb-2">
+                  <input class="bg-gray-200 my-1 rounded-lg border-none p-1 pl-2 leading-7 w-4/5 sm:w-3/4" autocomplete="on" type="text" placeholder="Monday meal" name="item" required />
+                  <div class="basis-full h-0"></div>
+                  <div class="flex justify-between w-4/5 sm:w-3/4">
+                    <select class="bg-gray-200 my-1 rounded-lg border-none p-1 pl-2 leading-7" name="mealtime" required>
+                      <option value="breakfast">Breakfast</option>
+                      <option value="lunch">Lunch</option>
+                      <option value="dinner">Dinner</option>
+                      <option value="snack">Snack</option>
+                    </select>
+                    <input type="hidden" name="weekday" value="monday" />
+                    <input type="hidden" name="complete" value="false" />
+                    <input type="hidden" name="note" />
+                    <button class="rounded-lg bg-gray-600 ml-2 my-1 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bluelagoon-600 leading-7 justify-self-end h-9 w-2/5" type="submit">Add</button>
+                  </div>
+                </form>
+
+                <h4 class="font-semibold">Breakfast</h4>
+                <ul>
+                  <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+                    <% if (mealPlanDemoStuff[i].weekday === 'monday' && mealPlanDemoStuff[i].mealtime === 'breakfast') { %>
+                      <% if (mealPlanDemoStuff[i].item) {%>
+                        <li id="<%= mealPlanDemoStuff[i]._id %>" class="item ml-3">
+                          <% if(mealPlanDemoStuff[i].complete === true) { %>
+                            <span class="item-name complete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+
+                          <% }else { %>
+                            <span class="item-name incomplete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                          <% } %>
+                        </li>
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                </ul>
+
+                <h4 class="font-semibold">Lunch</h4>
+                <ul>
+                  <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+                    <% if (mealPlanDemoStuff[i].weekday === 'monday' && mealPlanDemoStuff[i].mealtime === 'lunch') { %>
+                      <% if (mealPlanDemoStuff[i].item) {%>
+                        <li id="<%= mealPlanDemoStuff[i]._id %>" class="item ml-3">
+                          <% if(mealPlanDemoStuff[i].complete === true) { %>
+                            <span class="item-name complete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+
+                          <% }else { %>
+                            <span class="item-name incomplete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                          <% } %>
+                        </li>
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                </ul>
+
+                <h4 class="font-semibold">Dinner</h4>
+                <ul>
+                  <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+                    <% if (mealPlanDemoStuff[i].weekday === 'monday' && mealPlanDemoStuff[i].mealtime === 'dinner') { %>
+                      <% if (mealPlanDemoStuff[i].item) {%>
+                        <li id="<%= mealPlanDemoStuff[i]._id %>" class="item ml-3">
+                          <% if(mealPlanDemoStuff[i].complete === true) { %>
+                            <span class="item-name complete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+
+                          <% }else { %>
+                            <span class="item-name incomplete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                          <% } %>
+                        </li>
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                </ul>
+
+                <h4 class="font-semibold">Snack</h4>
+                <ul>
+                  <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+                    <% if (mealPlanDemoStuff[i].weekday === 'monday' && mealPlanDemoStuff[i].mealtime === 'snack') { %>
+                      <% if (mealPlanDemoStuff[i].item) {%>
+                        <li id="<%= mealPlanDemoStuff[i]._id %>" class="item ml-3">
+                          <% if(mealPlanDemoStuff[i].complete === true) { %>
+                            <span class="item-name complete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+
+                          <% }else { %>
+                            <span class="item-name incomplete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                          <% } %>
+                        </li>
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                </ul>
+
+                <!-- <ul>
+                  <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+            
+                    <% if (mealPlanDemoStuff[i].mondaymeal) {%>
+                      <li id="monday" class="item">
+                        <% if(mealPlanDemoStuff[i].complete === true) { %>
+                          <span class="item-name complete" ><%= mealPlanDemoStuff[i].mondaymeal %></span> &nbsp
+                          <button><span class="far fa-edit"></span></button>
+                          <button><span class="far fa-sticky-note"></span></button>
+                          <button class='fa fa-trash meal-plan-trash'></button>
+                            <br />
+                          <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                          <button class="save-button button1" type="button">save</button>
+
+                        <% }else { %>
+                          <span class="item-name incomplete" ><%= mealPlanDemoStuff[i].mondaymeal %></span> &nbsp
+                          <button><span class="far fa-edit"></span></button>
+                          <button><span class="far fa-sticky-note"></span></button>
+                          <button class='fa fa-trash meal-plan-trash'></button>
+                            <br />
+                          <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                          <button class="save-button button1" type="button">save</button>
+                        <% } %>
+                      </li>
+                    <% } %>
+                  
+                  <% } %>
+                </ul> -->
+              </dd>
+            </div>
+            <!-- Monday End -->
+
+            <!-- Tuesday Start -->
+            <div class="relative pl-16">
+              <dt class="text-base font-semibold leading-7 text-gray-900">
+                <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-bluelagoon-600">
+                  <!-- <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                  </svg> -->
+                  <svg class="h-7 fill-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M32 32C14.3 32 0 46.3 0 64S14.3 96 32 96H160V448c0 17.7 14.3 32 32 32s32-14.3 32-32V96H352c17.7 0 32-14.3 32-32s-14.3-32-32-32H192 32z"/></svg>
+                </div>
+                Tuesday
+              </dt>
+              <dd class="mt-2 text-base leading-7 text-gray-600">
+                <form class="weekday flex flex-wrap mb-2">
+                  <input class="bg-gray-200 my-1 rounded-lg border-none p-1 pl-2 leading-7 w-4/5 sm:w-3/4" autocomplete="on" type="text" placeholder="Tuesday meal" name="item" required />
+                  <div class="basis-full h-0"></div>
+                  <!-- <input class="bg-gray-200 my-1" autocomplete="on" list="mondaymealtimeslist" placeholder="which meal time?" name="mondaymealtime" required /> -->
+                  <div class="flex justify-between w-4/5 sm:w-3/4">
+                    <select class="bg-gray-200 my-1 rounded-lg border-none p-1 pl-2 leading-7" name="mealtime" required>
+
+                    <!-- <datalist id="mondaymealtimeslist"> -->
+                      <option value="breakfast">Breakfast</option>
+                      <option value="lunch">Lunch</option>
+                      <option value="dinner">Dinner</option>
+                      <option value="snack">Snack</option>
+                    <!-- </datalist> -->
+                    </select>
+                    <input type="hidden" name="weekday" value="tuesday" />
+                    <input type="hidden" name="complete" value="false" />
+                    <input type="hidden" name="note" />
+                    <button class="rounded-lg bg-gray-600 ml-2 my-1 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bluelagoon-600 leading-7 justify-self-end h-9 w-2/5" type="submit">Add</button>
+                  </div>
+                </form>
+
+                <h4 class="font-semibold">Breakfast</h4>
+                <ul>
+                  <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+                    <% if (mealPlanDemoStuff[i].weekday === 'tuesday' && mealPlanDemoStuff[i].mealtime === 'breakfast') { %>
+                      <% if (mealPlanDemoStuff[i].item) {%>
+                        <li id="<%= mealPlanDemoStuff[i]._id %>"tuesday" class="item ml-3">
+                          <% if(mealPlanDemoStuff[i].complete === true) { %>
+                            <span class="item-name complete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+
+                          <% }else { %>
+                            <span class="item-name incomplete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                          <% } %>
+                        </li>
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                </ul>
+
+                <h4 class="font-semibold">Lunch</h4>
+                <ul>
+                  <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+                    <% if (mealPlanDemoStuff[i].weekday === 'tuesday' && mealPlanDemoStuff[i].mealtime === 'lunch') { %>
+                      <% if (mealPlanDemoStuff[i].item) {%>
+                        <li id="<%= mealPlanDemoStuff[i]._id %>"tuesday" class="item ml-3">
+                          <% if(mealPlanDemoStuff[i].complete === true) { %>
+                            <span class="item-name complete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+
+                          <% }else { %>
+                            <span class="item-name incomplete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                          <% } %>
+                        </li>
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                </ul>
+
+                <h4 class="font-semibold">Dinner</h4>
+                <ul>
+                  <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+                    <% if (mealPlanDemoStuff[i].weekday === 'tuesday' && mealPlanDemoStuff[i].mealtime === 'dinner') { %>
+                      <% if (mealPlanDemoStuff[i].item) {%>
+                        <li id="<%= mealPlanDemoStuff[i]._id %>"tuesday" class="item ml-3">
+                          <% if(mealPlanDemoStuff[i].complete === true) { %>
+                            <span class="item-name complete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+
+                          <% }else { %>
+                            <span class="item-name incomplete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                          <% } %>
+                        </li>
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                </ul>
+
+                <h4 class="font-semibold">Snack</h4>
+                <ul>
+                  <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+                    <% if (mealPlanDemoStuff[i].weekday === 'tuesday' && mealPlanDemoStuff[i].mealtime === 'snack') { %>
+                      <% if (mealPlanDemoStuff[i].item) {%>
+                        <li id="<%= mealPlanDemoStuff[i]._id %>"tuesday" class="item ml-3">
+                          <% if(mealPlanDemoStuff[i].complete === true) { %>
+                            <span class="item-name complete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+
+                          <% }else { %>
+                            <span class="item-name incomplete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                          <% } %>
+                        </li>
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                </ul>
+            </div>
+            <!-- Tuesday End -->
+            
+            <!-- Wednesday Start -->
+            <div class="relative pl-16">
+              <dt class="text-base font-semibold leading-7 text-gray-900">
+                <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-bluelagoon-600">
+                  <!-- <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                  </svg> -->
+                  <svg class="h-7 fill-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M20.8 34c16.5-6.2 35 2.2 41.2 18.7l110.2 294L257.3 55c4-13.7 16.5-23 30.7-23s26.7 9.4 30.7 23l85.1 291.7L514 52.8c6.2-16.5 24.6-24.9 41.2-18.7s24.9 24.7 18.7 41.2l-144 384c-4.8 12.9-17.4 21.3-31.2 20.7s-25.7-9.8-29.5-23L288 178.3 206.7 457c-3.9 13.2-15.8 22.5-29.5 23s-26.3-7.8-31.2-20.7L2 75.2C-4.2 58.7 4.2 40.2 20.8 34z"/></svg>
+                </div>
+                Wednesday
+              </dt>
+              <dd class="mt-2 text-base leading-7 text-gray-600">
+                <form class="weekday flex flex-wrap mb-2">
+                  <input class="bg-gray-200 my-1 rounded-lg border-none p-1 pl-2 leading-7 w-4/5 sm:w-3/4" autocomplete="on" type="text" placeholder="Wednesday meal" name="item" required />
+                  <div class="basis-full h-0"></div>
+                  <!-- <input class="bg-gray-200 my-1" autocomplete="on" list="mondaymealtimeslist" placeholder="which meal time?" name="mondaymealtime" required /> -->
+                  <div class="flex justify-between w-4/5 sm:w-3/4">
+                    <select class="bg-gray-200 my-1 rounded-lg border-none p-1 pl-2 leading-7" name="mealtime" required>
+
+                    <!-- <datalist id="mondaymealtimeslist"> -->
+                      <option value="breakfast">Breakfast</option>
+                      <option value="lunch">Lunch</option>
+                      <option value="dinner">Dinner</option>
+                      <option value="snack">Snack</option>
+                    <!-- </datalist> -->
+                    </select>
+                    <input type="hidden" name="weekday" value="wednesday" />
+                    <input type="hidden" name="complete" value="false" />
+                    <input type="hidden" name="note" />
+                    <button class="rounded-lg bg-gray-600 ml-2 my-1 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bluelagoon-600 leading-7 justify-self-end h-9 w-2/5" type="submit">Add</button>
+                  </div>
+                </form>
+
+                <h4 class="font-semibold">Breakfast</h4>
+                <ul>
+                  <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+                    <% if (mealPlanDemoStuff[i].weekday === 'wednesday' && mealPlanDemoStuff[i].mealtime === 'breakfast') { %>
+                      <% if (mealPlanDemoStuff[i].item) {%>
+                        <li id="<%= mealPlanDemoStuff[i]._id %>"wednesday" class="item ml-3">
+                          <% if(mealPlanDemoStuff[i].complete === true) { %>
+                            <span class="item-name complete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+
+                          <% }else { %>
+                            <span class="item-name incomplete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                          <% } %>
+                        </li>
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                </ul>
+
+                <h4 class="font-semibold">Lunch</h4>
+                <ul>
+                  <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+                    <% if (mealPlanDemoStuff[i].weekday === 'wednesday' && mealPlanDemoStuff[i].mealtime === 'lunch') { %>
+                      <% if (mealPlanDemoStuff[i].item) {%>
+                        <li id="<%= mealPlanDemoStuff[i]._id %>"wednesday" class="item ml-3">
+                          <% if(mealPlanDemoStuff[i].complete === true) { %>
+                            <span class="item-name complete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+
+                          <% }else { %>
+                            <span class="item-name incomplete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                          <% } %>
+                        </li>
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                </ul>
+
+                <h4 class="font-semibold">Dinner</h4>
+                <ul>
+                  <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+                    <% if (mealPlanDemoStuff[i].weekday === 'wednesday' && mealPlanDemoStuff[i].mealtime === 'dinner') { %>
+                      <% if (mealPlanDemoStuff[i].item) {%>
+                        <li id="<%= mealPlanDemoStuff[i]._id %>"wednesday" class="item ml-3">
+                          <% if(mealPlanDemoStuff[i].complete === true) { %>
+                            <span class="item-name complete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+
+                          <% }else { %>
+                            <span class="item-name incomplete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                          <% } %>
+                        </li>
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                </ul>
+                <h4 class="font-semibold">Snack</h4>
+                <ul>
+                  <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+                    <% if (mealPlanDemoStuff[i].weekday === 'wednesday' && mealPlanDemoStuff[i].mealtime === 'snack') { %>
+                      <% if (mealPlanDemoStuff[i].item) {%>
+                        <li id="<%= mealPlanDemoStuff[i]._id %>"wednesday" class="item ml-3">
+                          <% if(mealPlanDemoStuff[i].complete === true) { %>
+                            <span class="item-name complete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+
+                          <% }else { %>
+                            <span class="item-name incomplete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                          <% } %>
+                        </li>
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                </ul>
+              </dd>
+            </div>
+            <!-- Wednesday End -->
+            
+            <!-- Thursday Start -->
+            <div class="relative pl-16">
+              <dt class="text-base font-semibold leading-7 text-gray-900">
+                <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-bluelagoon-600">
+                  <!-- <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M7.864 4.243A7.5 7.5 0 0119.5 10.5c0 2.92-.556 5.709-1.568 8.268M5.742 6.364A7.465 7.465 0 004.5 10.5a7.464 7.464 0 01-1.15 3.993m1.989 3.559A11.209 11.209 0 008.25 10.5a3.75 3.75 0 117.5 0c0 .527-.021 1.049-.064 1.565M12 10.5a14.94 14.94 0 01-3.6 9.75m6.633-4.596a18.666 18.666 0 01-2.485 5.33" />
+                  </svg> -->
+                  <svg class="h-7 fill-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M32 32C14.3 32 0 46.3 0 64S14.3 96 32 96H160V448c0 17.7 14.3 32 32 32s32-14.3 32-32V96H352c17.7 0 32-14.3 32-32s-14.3-32-32-32H192 32z"/></svg>
+                </div>
+                Thursday
+              </dt>
+              <dd class="mt-2 text-base leading-7 text-gray-600">
+                <form class="weekday flex flex-wrap mb-2">
+                  <input class="bg-gray-200 my-1 rounded-lg border-none p-1 pl-2 leading-7 w-4/5 sm:w-3/4" autocomplete="on" type="text" placeholder="Thursday meal" name="item" required />
+                  <div class="basis-full h-0"></div>
+                  <!-- <input class="bg-gray-200 my-1" autocomplete="on" list="mondaymealtimeslist" placeholder="which meal time?" name="mondaymealtime" required /> -->
+                  <div class="flex justify-between w-4/5 sm:w-3/4">
+                    <select class="bg-gray-200 my-1 rounded-lg border-none p-1 pl-2 leading-7" name="mealtime" required>
+
+                    <!-- <datalist id="mondaymealtimeslist"> -->
+                      <option value="breakfast">Breakfast</option>
+                      <option value="lunch">Lunch</option>
+                      <option value="dinner">Dinner</option>
+                      <option value="snack">Snack</option>
+                    <!-- </datalist> -->
+                    </select>
+                    <input type="hidden" name="weekday" value="thursday" />
+                    <input type="hidden" name="complete" value="false" />
+                    <input type="hidden" name="note" />
+                    <button class="rounded-lg bg-gray-600 ml-2 my-1 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bluelagoon-600 leading-7 justify-self-end h-9 w-2/5" type="submit">Add</button>
+                  </div>
+                </form>
+
+                <h4 class="font-semibold">Breakfast</h4>
+                <ul>
+                  <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+                    <% if (mealPlanDemoStuff[i].weekday === 'thursday' && mealPlanDemoStuff[i].mealtime === 'breakfast') { %>
+                      <% if (mealPlanDemoStuff[i].item) {%>
+                        <li id="<%= mealPlanDemoStuff[i]._id %>"thursday" class="item ml-3">
+                          <% if(mealPlanDemoStuff[i].complete === true) { %>
+                            <span class="item-name complete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+
+                          <% }else { %>
+                            <span class="item-name incomplete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                          <% } %>
+                        </li>
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                </ul>
+
+                <h4 class="font-semibold">Lunch</h4>
+                <ul>
+                  <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+                    <% if (mealPlanDemoStuff[i].weekday === 'thursday' && mealPlanDemoStuff[i].mealtime === 'lunch') { %>
+                      <% if (mealPlanDemoStuff[i].item) {%>
+                        <li id="<%= mealPlanDemoStuff[i]._id %>"thursday" class="item ml-3">
+                          <% if(mealPlanDemoStuff[i].complete === true) { %>
+                            <span class="item-name complete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+
+                          <% }else { %>
+                            <span class="item-name incomplete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                          <% } %>
+                        </li>
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                </ul>
+
+                <h4 class="font-semibold">Dinner</h4>
+                <ul>
+                  <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+                    <% if (mealPlanDemoStuff[i].weekday === 'thursday' && mealPlanDemoStuff[i].mealtime === 'dinner') { %>
+                      <% if (mealPlanDemoStuff[i].item) {%>
+                        <li id="<%= mealPlanDemoStuff[i]._id %>"thursday" class="item ml-3">
+                          <% if(mealPlanDemoStuff[i].complete === true) { %>
+                            <span class="item-name complete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+
+                          <% }else { %>
+                            <span class="item-name incomplete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                          <% } %>
+                        </li>
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                </ul>
+
+                <h4 class="font-semibold">Snack</h4>
+                <ul>
+                  <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+                    <% if (mealPlanDemoStuff[i].weekday === 'thursday' && mealPlanDemoStuff[i].mealtime === 'snack') { %>
+                      <% if (mealPlanDemoStuff[i].item) {%>
+                        <li id="<%= mealPlanDemoStuff[i]._id %>"thursday" class="item ml-3">
+                          <% if(mealPlanDemoStuff[i].complete === true) { %>
+                            <span class="item-name complete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+
+                          <% }else { %>
+                            <span class="item-name incomplete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                          <% } %>
+                        </li>
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                </ul>
+            
+              </dd>
+            </div>
+            <!-- Thursday End -->
+
+            <!-- Friday Start -->
+            <div class="relative pl-16">
+              <dt class="text-base font-semibold leading-7 text-gray-900">
+                <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-bluelagoon-600">
+                  <!-- <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M7.864 4.243A7.5 7.5 0 0119.5 10.5c0 2.92-.556 5.709-1.568 8.268M5.742 6.364A7.465 7.465 0 004.5 10.5a7.464 7.464 0 01-1.15 3.993m1.989 3.559A11.209 11.209 0 008.25 10.5a3.75 3.75 0 117.5 0c0 .527-.021 1.049-.064 1.565M12 10.5a14.94 14.94 0 01-3.6 9.75m6.633-4.596a18.666 18.666 0 01-2.485 5.33" />
+                  </svg> -->
+                  <svg class="h-7 fill-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M64 32C28.7 32 0 60.7 0 96V256 448c0 17.7 14.3 32 32 32s32-14.3 32-32V288H224c17.7 0 32-14.3 32-32s-14.3-32-32-32H64V96H288c17.7 0 32-14.3 32-32s-14.3-32-32-32H64z"/></svg>
+                </div>
+                Friday
+              </dt>
+              <dd class="mt-2 text-base leading-7 text-gray-600">
+                <form class="weekday flex flex-wrap mb-2">
+                  <input class="bg-gray-200 my-1 rounded-lg border-none p-1 pl-2 leading-7 w-4/5 sm:w-3/4" autocomplete="on" type="text" placeholder="Friday meal" name="item" required />
+                  <div class="basis-full h-0"></div>
+                  <!-- <input class="bg-gray-200 my-1" autocomplete="on" list="mondaymealtimeslist" placeholder="which meal time?" name="mondaymealtime" required /> -->
+                  <div class="flex justify-between w-4/5 sm:w-3/4">
+                    <select class="bg-gray-200 my-1 rounded-lg border-none p-1 pl-2 leading-7" name="mealtime" required>
+
+                    <!-- <datalist id="mondaymealtimeslist"> -->
+                      <option value="breakfast">Breakfast</option>
+                      <option value="lunch">Lunch</option>
+                      <option value="dinner">Dinner</option>
+                      <option value="snack">Snack</option>
+                    <!-- </datalist> -->
+                    </select>
+                    <input type="hidden" name="weekday" value="friday" />
+                    <input type="hidden" name="complete" value="false" />
+                    <input type="hidden" name="note" />
+                    <button class="rounded-lg bg-gray-600 ml-2 my-1 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bluelagoon-600 leading-7 justify-self-end h-9 w-2/5" type="submit">Add</button>
+                  </div>
+                </form>
+
+                <h4 class="font-semibold">Breakfast</h4>
+                <ul>
+                  <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+                    <% if (mealPlanDemoStuff[i].weekday === 'friday' && mealPlanDemoStuff[i].mealtime === 'breakfast') { %>
+                      <% if (mealPlanDemoStuff[i].item) {%>
+                        <li id="<%= mealPlanDemoStuff[i]._id %>"friday" class="item ml-3">
+                          <% if(mealPlanDemoStuff[i].complete === true) { %>
+                            <span class="item-name complete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+
+                          <% }else { %>
+                            <span class="item-name incomplete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                          <% } %>
+                        </li>
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                </ul>
+
+                <h4 class="font-semibold">Lunch</h4>
+                <ul>
+                  <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+                    <% if (mealPlanDemoStuff[i].weekday === 'friday' && mealPlanDemoStuff[i].mealtime === 'lunch') { %>
+                      <% if (mealPlanDemoStuff[i].item) {%>
+                        <li id="<%= mealPlanDemoStuff[i]._id %>"friday" class="item ml-3">
+                          <% if(mealPlanDemoStuff[i].complete === true) { %>
+                            <span class="item-name complete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+
+                          <% }else { %>
+                            <span class="item-name incomplete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                          <% } %>
+                        </li>
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                </ul>
+
+                <h4 class="font-semibold">Dinner</h4>
+                <ul>
+                  <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+                    <% if (mealPlanDemoStuff[i].weekday === 'friday' && mealPlanDemoStuff[i].mealtime === 'dinner') { %>
+                      <% if (mealPlanDemoStuff[i].item) {%>
+                        <li id="<%= mealPlanDemoStuff[i]._id %>"friday" class="item ml-3">
+                          <% if(mealPlanDemoStuff[i].complete === true) { %>
+                            <span class="item-name complete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+
+                          <% }else { %>
+                            <span class="item-name incomplete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                          <% } %>
+                        </li>
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                </ul>
+
+                <h4 class="font-semibold">Snack</h4>
+                <ul>
+                  <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+                    <% if (mealPlanDemoStuff[i].weekday === 'friday' && mealPlanDemoStuff[i].mealtime === 'snack') { %>
+                      <% if (mealPlanDemoStuff[i].item) {%>
+                        <li id="<%= mealPlanDemoStuff[i]._id %>"friday" class="item ml-3">
+                          <% if(mealPlanDemoStuff[i].complete === true) { %>
+                            <span class="item-name complete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+
+                          <% }else { %>
+                            <span class="item-name incomplete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                          <% } %>
+                        </li>
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                </ul>
+
+              </dd>
+            </div>
+            <!-- Friday End -->
+
+            <!-- Saturday Start -->
+            <div class="relative pl-16">
+              <dt class="text-base font-semibold leading-7 text-gray-900">
+                <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-bluelagoon-600">
+                  <!-- <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M7.864 4.243A7.5 7.5 0 0119.5 10.5c0 2.92-.556 5.709-1.568 8.268M5.742 6.364A7.465 7.465 0 004.5 10.5a7.464 7.464 0 01-1.15 3.993m1.989 3.559A11.209 11.209 0 008.25 10.5a3.75 3.75 0 117.5 0c0 .527-.021 1.049-.064 1.565M12 10.5a14.94 14.94 0 01-3.6 9.75m6.633-4.596a18.666 18.666 0 01-2.485 5.33" />
+                  </svg> -->
+                  <svg class="h-7 fill-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M99.1 105.4C79 114 68.2 127.2 65.2 144.8c-2.4 14.1-.7 23.2 2 29.4c2.8 6.3 7.9 12.4 16.7 18.6c19.2 13.4 48.3 22.1 84.9 32.5c1 .3 1.9 .6 2.9 .8c32.7 9.3 72 20.6 100.9 40.7c15.7 10.9 29.9 25.5 38.6 45.1c8.8 19.8 10.8 42 6.6 66.3c-7.3 42.5-35.3 71.7-71.8 87.3c-35.4 15.2-79.1 17.9-123.7 10.9l-.2 0 0 0c-24-3.9-62.7-17.1-87.6-25.6c-4.8-1.7-9.2-3.1-12.8-4.3C5.1 440.8-3.9 422.7 1.6 405.9s23.7-25.8 40.5-20.3c4.9 1.6 10.2 3.4 15.9 5.4c25.4 8.6 56.4 19.2 74.4 22.1c36.8 5.7 67.5 2.5 88.5-6.5c20.1-8.6 30.8-21.8 33.9-39.4c2.4-14.1 .7-23.2-2-29.4c-2.8-6.3-7.9-12.4-16.7-18.6c-19.2-13.4-48.3-22.1-84.9-32.5c-1-.3-1.9-.6-2.9-.8c-32.7-9.3-72-20.6-100.9-40.7c-15.7-10.9-29.9-25.5-38.6-45.1c-8.8-19.8-10.8-42-6.6-66.3l31.5 5.5L2.1 133.9C9.4 91.4 37.4 62.2 73.9 46.6c35.4-15.2 79.1-17.9 123.7-10.9c13 2 52.4 9.6 66.6 13.4c17.1 4.5 27.2 22.1 22.7 39.2s-22.1 27.2-39.2 22.7c-11.2-3-48.1-10.2-60.1-12l4.9-31.5-4.9 31.5c-36.9-5.8-67.5-2.5-88.6 6.5z"/></svg>
+                </div>
+                Saturday
+              </dt>
+              <dd class="mt-2 text-base leading-7 text-gray-600">
+                <form class="weekday flex flex-wrap mb-2">
+                  <input class="bg-gray-200 my-1 rounded-lg border-none p-1 pl-2 leading-7 w-4/5 sm:w-3/4" autocomplete="on" type="text" placeholder="Saturday meal" name="item" required />
+                  <div class="basis-full h-0"></div>
+                  <!-- <input class="bg-gray-200 my-1" autocomplete="on" list="mondaymealtimeslist" placeholder="which meal time?" name="mondaymealtime" required /> -->
+                  <div class="flex justify-between w-4/5 sm:w-3/4">
+                    <select class="bg-gray-200 my-1 rounded-lg border-none p-1 pl-2 leading-7" name="mealtime" required>
+
+                    <!-- <datalist id="mondaymealtimeslist"> -->
+                      <option value="breakfast">Breakfast</option>
+                      <option value="lunch">Lunch</option>
+                      <option value="dinner">Dinner</option>
+                      <option value="snack">Snack</option>
+                    <!-- </datalist> -->
+                    </select>
+                    <input type="hidden" name="weekday" value="saturday" />
+                    <input type="hidden" name="complete" value="false" />
+                    <input type="hidden" name="note" />
+                    <button class="rounded-lg bg-gray-600 ml-2 my-1 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bluelagoon-600 leading-7 justify-self-end h-9 w-2/5" type="submit">Add</button>
+                  </div>
+                </form>
+
+                <h4 class="font-semibold">Breakfast</h4>
+                <ul>
+                  <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+                    <% if (mealPlanDemoStuff[i].weekday === 'saturday' && mealPlanDemoStuff[i].mealtime === 'breakfast') { %>
+                      <% if (mealPlanDemoStuff[i].item) {%>
+                        <li id="<%= mealPlanDemoStuff[i]._id %>"saturday" class="item ml-3">
+                          <% if(mealPlanDemoStuff[i].complete === true) { %>
+                            <span class="item-name complete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+
+                          <% }else { %>
+                            <span class="item-name incomplete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                          <% } %>
+                        </li>
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                </ul>
+
+                <h4 class="font-semibold">Lunch</h4>
+                <ul>
+                  <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+                    <% if (mealPlanDemoStuff[i].weekday === 'saturday' && mealPlanDemoStuff[i].mealtime === 'lunch') { %>
+                      <% if (mealPlanDemoStuff[i].item) {%>
+                        <li id="<%= mealPlanDemoStuff[i]._id %>"saturday" class="item ml-3">
+                          <% if(mealPlanDemoStuff[i].complete === true) { %>
+                            <span class="item-name complete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+
+                          <% }else { %>
+                            <span class="item-name incomplete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                          <% } %>
+                        </li>
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                </ul>
+
+                <h4 class="font-semibold">Dinner</h4>
+                <ul>
+                  <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+                    <% if (mealPlanDemoStuff[i].weekday === 'saturday' && mealPlanDemoStuff[i].mealtime === 'dinner') { %>
+                      <% if (mealPlanDemoStuff[i].item) {%>
+                        <li id="<%= mealPlanDemoStuff[i]._id %>"saturday" class="item ml-3">
+                          <% if(mealPlanDemoStuff[i].complete === true) { %>
+                            <span class="item-name complete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+
+                          <% }else { %>
+                            <span class="item-name incomplete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                          <% } %>
+                        </li>
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                </ul>
+
+                <h4 class="font-semibold">Snack</h4>
+                <ul>
+                  <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+                    <% if (mealPlanDemoStuff[i].weekday === 'saturday' && mealPlanDemoStuff[i].mealtime === 'snack') { %>
+                      <% if (mealPlanDemoStuff[i].item) {%>
+                        <li id="<%= mealPlanDemoStuff[i]._id %>"saturday" class="item ml-3">
+                          <% if(mealPlanDemoStuff[i].complete === true) { %>
+                            <span class="item-name complete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+
+                          <% }else { %>
+                            <span class="item-name incomplete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                          <% } %>
+                        </li>
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                </ul>
+
+              </dd>
+            </div>
+            <!-- Saturday End -->
+
+            <!-- Sunday Start -->
+            <div class="relative pl-16">
+              <dt class="text-base font-semibold leading-7 text-gray-900">
+                <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-bluelagoon-600">
+                  <!-- <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M7.864 4.243A7.5 7.5 0 0119.5 10.5c0 2.92-.556 5.709-1.568 8.268M5.742 6.364A7.465 7.465 0 004.5 10.5a7.464 7.464 0 01-1.15 3.993m1.989 3.559A11.209 11.209 0 008.25 10.5a3.75 3.75 0 117.5 0c0 .527-.021 1.049-.064 1.565M12 10.5a14.94 14.94 0 01-3.6 9.75m6.633-4.596a18.666 18.666 0 01-2.485 5.33" />
+                  </svg> -->
+                  <svg class="h-7 fill-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M99.1 105.4C79 114 68.2 127.2 65.2 144.8c-2.4 14.1-.7 23.2 2 29.4c2.8 6.3 7.9 12.4 16.7 18.6c19.2 13.4 48.3 22.1 84.9 32.5c1 .3 1.9 .6 2.9 .8c32.7 9.3 72 20.6 100.9 40.7c15.7 10.9 29.9 25.5 38.6 45.1c8.8 19.8 10.8 42 6.6 66.3c-7.3 42.5-35.3 71.7-71.8 87.3c-35.4 15.2-79.1 17.9-123.7 10.9l-.2 0 0 0c-24-3.9-62.7-17.1-87.6-25.6c-4.8-1.7-9.2-3.1-12.8-4.3C5.1 440.8-3.9 422.7 1.6 405.9s23.7-25.8 40.5-20.3c4.9 1.6 10.2 3.4 15.9 5.4c25.4 8.6 56.4 19.2 74.4 22.1c36.8 5.7 67.5 2.5 88.5-6.5c20.1-8.6 30.8-21.8 33.9-39.4c2.4-14.1 .7-23.2-2-29.4c-2.8-6.3-7.9-12.4-16.7-18.6c-19.2-13.4-48.3-22.1-84.9-32.5c-1-.3-1.9-.6-2.9-.8c-32.7-9.3-72-20.6-100.9-40.7c-15.7-10.9-29.9-25.5-38.6-45.1c-8.8-19.8-10.8-42-6.6-66.3l31.5 5.5L2.1 133.9C9.4 91.4 37.4 62.2 73.9 46.6c35.4-15.2 79.1-17.9 123.7-10.9c13 2 52.4 9.6 66.6 13.4c17.1 4.5 27.2 22.1 22.7 39.2s-22.1 27.2-39.2 22.7c-11.2-3-48.1-10.2-60.1-12l4.9-31.5-4.9 31.5c-36.9-5.8-67.5-2.5-88.6 6.5z"/></svg>
+                </div>
+                Sunday
+              </dt>
+              <dd class="mt-2 text-base leading-7 text-gray-600">
+                <form class="weekday flex flex-wrap mb-2">
+                  <input class="bg-gray-200 my-1 rounded-lg border-none p-1 pl-2 leading-7 w-4/5 sm:w-3/4" autocomplete="on" type="text" placeholder="Sunday meal" name="item" required />
+                  <div class="basis-full h-0"></div>
+                  <!-- <input class="bg-gray-200 my-1" autocomplete="on" list="mondaymealtimeslist" placeholder="which meal time?" name="mondaymealtime" required /> -->
+                  <div class="flex justify-between w-4/5 sm:w-3/4">
+                    <select class="bg-gray-200 my-1 rounded-lg border-none p-1 pl-2 leading-7" name="mealtime" required>
+
+                    <!-- <datalist id="mondaymealtimeslist"> -->
+                      <option value="breakfast">Breakfast</option>
+                      <option value="lunch">Lunch</option>
+                      <option value="dinner">Dinner</option>
+                      <option value="snack">Snack</option>
+                    <!-- </datalist> -->
+                    </select>
+                    <input type="hidden" name="weekday" value="sunday" />
+                    <input type="hidden" name="complete" value="false" />
+                    <input type="hidden" name="note" />
+                    <button class="rounded-lg bg-gray-600 ml-2 my-1 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bluelagoon-600 leading-7 justify-self-end h-9 w-2/5" type="submit">Add</button>
+                  </div>
+                </form>
+
+                <h4 class="font-semibold">Breakfast</h4>
+                <ul>
+                  <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+                    <% if (mealPlanDemoStuff[i].weekday === 'sunday' && mealPlanDemoStuff[i].mealtime === 'breakfast') { %>
+                      <% if (mealPlanDemoStuff[i].item) {%>
+                        <li id="<%= mealPlanDemoStuff[i]._id %>"sunday" class="item ml-3">
+                          <% if(mealPlanDemoStuff[i].complete === true) { %>
+                            <span class="item-name complete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+
+                          <% }else { %>
+                            <span class="item-name incomplete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                          <% } %>
+                        </li>
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                </ul>
+
+                <h4 class="font-semibold">Lunch</h4>
+                <ul>
+                  <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+                    <% if (mealPlanDemoStuff[i].weekday === 'sunday' && mealPlanDemoStuff[i].mealtime === 'lunch') { %>
+                      <% if (mealPlanDemoStuff[i].item) {%>
+                        <li id="<%= mealPlanDemoStuff[i]._id %>"sunday" class="item ml-3">
+                          <% if(mealPlanDemoStuff[i].complete === true) { %>
+                            <span class="item-name complete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+
+                          <% }else { %>
+                            <span class="item-name incomplete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                          <% } %>
+                        </li>
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                </ul>
+
+                <h4 class="font-semibold">Dinner</h4>
+                <ul>
+                  <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+                    <% if (mealPlanDemoStuff[i].weekday === 'sunday' && mealPlanDemoStuff[i].mealtime === 'dinner') { %>
+                      <% if (mealPlanDemoStuff[i].item) {%>
+                        <li id="<%= mealPlanDemoStuff[i]._id %>"sunday" class="item ml-3">
+                          <% if(mealPlanDemoStuff[i].complete === true) { %>
+                            <span class="item-name complete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+
+                          <% }else { %>
+                            <span class="item-name incomplete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                          <% } %>
+                        </li>
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                </ul>
+
+                <h4 class="font-semibold">Snack</h4>
+                <ul>
+                  <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+                    <% if (mealPlanDemoStuff[i].weekday === 'sunday' && mealPlanDemoStuff[i].mealtime === 'snack') { %>
+                      <% if (mealPlanDemoStuff[i].item) {%>
+                        <li id="<%= mealPlanDemoStuff[i]._id %>"sunday" class="item ml-3">
+                          <% if(mealPlanDemoStuff[i].complete === true) { %>
+                            <span class="item-name complete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+
+                          <% }else { %>
+                            <span class="item-name incomplete" ><%= mealPlanDemoStuff[i].item %></span> &nbsp
+                            <!-- <button><span class="far fa-edit"></span></button> -->
+                            <button class="far fa-sticky-note text-gray-600 hover:text-[#848A98]"></button>
+                            <button class='fa fa-trash meal-plan-trash text-gray-600 hover:text-gray-500'></button>
+                            <br />
+                            <div class="item-note" contenteditable="true" placeholder="e.g. Add extra cinnamon!"><%= mealPlanDemoStuff[i].note %></div>
+                            <button class="save-button button1 p-1 px-2 rounded-lg text-sm font-semibold text-white leading-7 hover:bg-[#40BE85]" type="button">Save</button><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                          <% } %>
+                        </li>
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                </ul>
+
+                
+              </dd>
+            </div>
+            <!-- Sunday end -->
+
+
+          </dl>
+        </div>
+
+      </div>
+      <!-- crazy background blob 2/2 -->
+      <!-- <div class="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]" aria-hidden="true">
+        <div class="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
+      </div> -->
+    </div>
+  </div>
+
+
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+
+  </div>
+
+
+    <!-- <h3>Monday</h3>
+    <ul>
+      <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+
+        <% if (mealPlanDemoStuff[i].mondaymeal) {%>
+          <li>
+            <span><%= mealPlanDemoStuff[i].mondaymeal %></span> &nbsp
+            <span class='fa fa-trash meal-plan-trash'></span>
+          </li>
+        <% } %>
+      
+      <% } %>
+    </ul>
+
+    <form action="/meal-plan-form" method="POST">
+      <input type="text" placeholder="monday-meal" name="mondaymeal" />
+      <input type="hidden" name="weekday" value="monday">
+      <button type="submit">Add</button>
+    </form> -->
+
+
+    <!-- <h3>Tuesday</h3>
+    <ul>
+      <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+
+        <% if (mealPlanDemoStuff[i].tuesdaymeal) {%>
+          <li>
+            <span><%= mealPlanDemoStuff[i].tuesdaymeal %></span>
+          </li>
+        <% } %>
+      
+      <% } %>
+    </ul>
+
+    <form action="/meal-plan-form" method="POST">
+      <input type="text" placeholder="Tuesday-meal" name="tuesdaymeal" />
+      <input type="hidden" name="weekday" value="tuesday">
+      <button type="submit">Add</button>
+    </form> -->
+
+
+    <!-- <h3>Wednesday</h3>
+    <ul>
+      <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+
+        <% if (mealPlanDemoStuff[i].wednesdaymeal) {%>
+          <li>
+            <span><%= mealPlanDemoStuff[i].wednesdaymeal %></span> &nbsp
+            <span class="fa fa-trash meal-plan-trash"></span>
+          </li>
+        <% } %>
+      
+      <% } %>
+    </ul>
+
+    <form action="/meal-plan-form" method="POST">
+      <input type="text" placeholder="Wednesday-meal" name="wednesdaymeal" />
+      <input type="hidden" name="weekday" value="wednesday">
+      <button type="submit">Add</button>
+    </form> -->
+
+
+    <!-- <h3>Thursday</h3>
+    <ul>
+      <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+
+        <% if (mealPlanDemoStuff[i].thursdaymeal) {%>
+          <li>
+            <span><%= mealPlanDemoStuff[i].thursdaymeal %></span>&nbsp
+            <span class="fa fa-trash meal-plan-trash"></span>
+          </li>
+        <% } %>
+      
+      <% } %>
+    </ul>
+
+    <form action="/meal-plan-form" method="POST">
+      <input type="text" placeholder="Thursday-meal" name="thursdaymeal" />
+      <input type="hidden" name="weekday" value="thursday">
+      <button type="submit">Add</button>
+    </form> -->
+
+    <!-- <h3>Friday</h3>
+    <ul>
+      <% for (let i = 0; i < mealPlanDemoStuff.length; i++) {%>
+
+        <% if (mealPlanDemoStuff[i].fridaymeal) {%>
+          <li>
+            <span><%= mealPlanDemoStuff[i].fridaymeal %></span> &nbsp
+            <span class="fa fa-trash meal-plan-trash"></span>
+          </li>
+        <% } %>
+      
+      <% } %>
+    </ul>
+    <form action="/meal-plan-form" method="POST">
+      <input type="text" placeholder="Friday-meal" name="fridaymeal" />
+      <input type="hidden" name="weekday" value="friday">
+      <button type="submit">Add</button>
+    </form> -->
+
+
+    <footer class="flex flex-col items-center text-base-content relative bg-gray-100/85">
+      <div class="max-w-3xl md:min-w-[500px]">
+  
+        <div class="px-4 pt-8 pb-2 gap-x-0 columns-2 justify-between items-center w-full">
+  
+          <ul class="px-2 flex flex-col">
+            <li class="px-2 py-1 pl-8 text-gray-700">
+              <a href="/" class="link link-hover">Home</a>
+            </li>
+            <li class="px-2 py-1 pl-8 text-gray-700">
+              <a href="meal-plan-demo" class="link link-hover">Meal Plan Demo</a>
+            </li>
+            <li class="px-2 py-1 pl-8 text-gray-700">
+              <a href="grocery-list-demo" class="link link-hover">Grocery List Demo</a>
+            </li>
+            <% if (user) { %>
+              <li class="px-2 py-1 pl-8 text-gray-700">
+                <a href="meal-plan" class="link link-hover">Meal Plan</a>
+              </li>
+              <li class="px-2 py-1 pl-8 text-gray-700">
+                <a href="grocery-list" class="link link-hover">Grocery List</a>
+              </li>
+              <li class="px-2 py-1 pl-8 text-gray-700">
+                <a href="/" class="link link-hover">Log In</a>
+              </li>
+              <li class="px-2 py-1 pl-8 text-gray-700">
+                <a href="/" class="link link-hover">Sign Up</a>
+              </li>
+            <% } else { %>
+              <li class="px-2 py-1 pl-8 text-gray-700">
+                <a href="log-in" class="link link-hover">Meal Plan</a>
+              </li>
+              <li class="px-2 py-1 pl-8 text-gray-700">
+                <a href="log-in" class="link link-hover">Grocery List</a>
+              </li>
+              <li class="px-2 py-1 pl-8 text-gray-700">
+                <a href="log-in" class="link link-hover">Log In</a>
+              </li>
+              <li class="px-2 py-1 pl-8 text-gray-700">
+                <a href="sign-up" class="link link-hover">Sign Up</a>
+              </li>
+            <% } %>
+          </ul>
+        </div>
+        <div class="p-2 flex flex-col items-center">
+          <a href="/">
+              <img href="/" class="h-10  hover:brightness-[1.03]" src="/assets/grocery-cart-color.png" alt="Munch Map shopping cart logo">
+          </a>
+        </div>
+        <aside class="px-4">
+          <p class="pt-2 pb-8 px-4 text-center text-gray-700">Created by <a href="https://philmach.netlify.app/" class="link link-hover">Phil Mach II</a> and <a href="https://chrisnelson.netlify.app/" class="link link-hover">Chris Nelson</a>
+          </p>
+          <hr class="border-gray-400" />
+          <p class="pt-2 pb-0 px-4 text-center text-gray-500">Copyright © 2025 - All rights reserved.</p>
+          <p class="pb-2 px-4 text-center text-gray-500">
+            <a href="https://www.flaticon.com/free-icons/supermarket" title="supermarket icons">Supermarket icons created by Freepik - Flaticon</a>
+          </p>
+        </aside>
+      </div>
+    </footer>
+
+
+    <script src="./js/demo.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+</body>
+</html>

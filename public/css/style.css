@@ -1,0 +1,101 @@
+#main-content {
+    min-height: 75vh;
+}
+.complete {
+    color: gray;
+    text-decoration: line-through;
+}
+.item-name {
+    cursor: pointer;
+}
+.item-name.complete:hover {
+    color:#327d3e;
+}
+.item-name.incomplete:hover {
+    color: #7d3232;
+}
+
+.hidden {
+    display: none;
+}
+.item-note {
+    display: none;
+    font-style: italic;
+    padding-left: 10px;
+    /* text-indent: 10px; */
+    /* margin-bottom: 0.5rem; */
+}
+/* placeholder code for item note */
+[contentEditable=true]:empty:before {
+    content: attr(placeholder);
+    opacity: 0.6;
+}
+
+.save-button {
+    display: none;
+    border: none;
+    color: white;
+    padding: 0px 5px;
+    text-align: center;
+    text-decoration: none;
+    /* display: inline-block; */
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+  }
+  
+.save-button.button1 {
+    background-color: #04AA6D;
+}
+.save-button.button2 {
+    background-color: #008CBA;
+}
+
+.button-display-toggle {
+    display: inline-block;
+}
+
+.item-note-form {
+    display: none;
+}
+
+.item-note-display-toggle {
+    display: block;
+}
+
+.save-button {
+    display: none;
+    border: none;
+    color: white;
+    padding: 0px 5px;
+    text-align: center;
+    text-decoration: none;
+    /* display: inline-block; */
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+  }
+
+.button-display-toggle {
+    display: inline-block;
+}
+
+.item-note-form {
+    display: none;
+}
+
+.item-note-display-toggle {
+    display: block;
+}
+
+.checkmark {
+    /* display: inline-block; */
+    display: none;
+    height: 1.5rem;
+    fill: #4b5563;
+    padding-left: 1rem;
+}
+
+.checkmark-display {
+    display: inline-block;
+}
